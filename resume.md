@@ -10,11 +10,11 @@
 
 - Experience designing, developing, and working in multi-node, high-availability Linux/Unix environments
 - Highly-skilled with Cloud and Open Source Technologies including:
--- DevOps Infrastructure as Code using Ansible, Terraform, Packer, Vagrant
---- CI/CD pipelines (Terraform workflows)
--- Amazon Web Services - Kinesis, Lambda, Aurora, API Gateway, EC2, ECS, EKS, Auto-Scaling, RedShift, S3, CloudWatch Metrics & Monitoring, Cost Explorer, Beanstalk, ELB
--- Kafka, Spark, Storm, Hbase, Hadoop, Hive, Tez, Yarn, MapReduce, Oozie, Sqoop, Zookeeper, Knox
--- Microsoft Azure
+  - DevOps Infrastructure as Code using Ansible, Terraform, Packer, Vagrant
+    - CI/CD pipelines (Terraform workflows)
+  - Amazon Web Services - Kinesis, Lambda, Aurora, API Gateway, EC2, ECS, EKS, Auto-Scaling, RedShift, S3, CloudWatch Metrics & Monitoring, Cost Explorer, Beanstalk, ELB
+  - Kafka, Spark, Storm, Hbase, Hadoop, Hive, Tez, Yarn, MapReduce, Oozie, Sqoop, Zookeeper, Knox
+  - Microsoft Azure
 - Strong Linux/Unix skillset
 - Seek challenges and always look for opportunities to learn
 - Versioning and source control using Git, BitBucket, GitHub, GitLab
