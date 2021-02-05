@@ -93,6 +93,7 @@
 ---
 # Education
 
-#### Bachelor of Science in Applied Information Systems
+## Culver-Stockton College, Canton, Mo <br/> *08.2006 - 05.2010*
 
-Culver-Stockton College, Canton, Mo <br/> *08.2006 - 05.2010*
+#### Bachelor of Science in Applied Information Systems
+- NAIA Baseball
