@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://analytics.jonmaestas.com/script.js"
+      data-website-id="974195be-c414-48b4-8e3c-59cb26de1785"
+      async
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#000000" />
+    <title>Jon Maestas</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+      }
+
+      #search-container {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        padding-top: 10px;
+      }
+
+      .content {
+        margin-top: 20px;
+      }
+
+      .highlight {
+        background-color: yellow;
+        color: black;
+      }
+
+      #search-navigation {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      #search-navigation button {
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      #search-navigation span {
+        font-weight: bold;
+      }
+    </style>
+    <!-- Include Marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+
+  <body>
+    <a name="top"></a>
+    <h1>Jon Maestas</h1>
+
+    <div id="search-container">
+      <div id="search-navigation">
+        <input type="text" id="searchBar" placeholder="Search for content..." />
+        <button id="prevBtn" disabled>&larr;</button>
+        <button id="nextBtn" disabled>&rarr;</button>
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div id="toc">
+      <ul></ul>
+    </div>
+
+    <div class="content" id="markdown-content">
+      <!-- Markdown content will be rendered here -->
+    </div>
+
+    <div
+      id="install-popup"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+      "
+    >
+      <p>Install for quick reference later.</p>
+      <button class="outline" id="install-btn">Install</button>
+      <button class="outline" id="dismiss-btn">Dismiss</button>
+    </div>
+
+    <script>
+      let currentIndex = 0;
+      let matches = [];
+
+      function clearHighlights() {
+        document.querySelectorAll(".highlight").forEach(function (element) {
+          element.classList.remove("highlight");
+        });
+      }
+
+      // Function to generate the Table of Contents (TOC)
+      function generateTOC() {
+        const toc = document.getElementById("toc").querySelector("ul");
+        const headers = document.querySelectorAll("#markdown-content h1");
+
+        headers.forEach((header, index) => {
+          const id = `section-${index}`;
+          header.id = id;
+
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `#${id}`;
+          a.textContent = header.textContent;
+
+          // Add umami event tracking
+          a.setAttribute(
+            "data-umami-event",
+            `TOC link - ${header.textContent}`
+          );
+
+          li.appendChild(a);
+          toc.appendChild(li);
+
+          // Add click event to handle scroll offset
+          a.addEventListener("click", function (e) {
+            e.preventDefault();
+            const target = document.getElementById(id);
+            const offset = 80; // Adjust this value as needed
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = target.getBoundingClientRect().top;
+            const offsetPosition = elementRect - bodyRect - offset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth",
+            });
+          });
+        });
+      }
+
+      // Function to load and render Markdown file
+      function loadMarkdown() {
+        fetch("content.md")
+          .then((response) => response.text())
+          .then((text) => {
+            document.getElementById("markdown-content").innerHTML =
+              marked.parse(text);
+            generateTOC();
+            initializeSearch();
+          })
+          .catch((error) =>
+            console.error("Error loading markdown file:", error)
+          );
+      }
+
+      // Function to initialize the search functionality after loading content
+      function initializeSearch() {
+        const searchBar = document.getElementById("searchBar");
+
+        searchBar.addEventListener("input", function () {
+          let searchQuery = this.value.toLowerCase();
+          let elements = document.querySelectorAll(
+            ".content p, .content h1, .content h2, .content h3, .content h4, .content h5, .content h6"
+          );
+
+          // Reset highlights and matches
+          clearHighlights();
+          matches = [];
+          currentIndex = 0;
+
+          // Search and highlight matches
+          if (searchQuery !== "") {
+            elements.forEach(function (element) {
+              let text = element.textContent.toLowerCase();
+              if (text.includes(searchQuery)) {
+                let regExp = new RegExp(searchQuery, "gi");
+                element.innerHTML = element.textContent.replace(
+                  regExp,
+                  (match) => `<span class="highlight">${match}</span>`
+                );
+                matches.push(element);
+              }
+            });
+          }
+
+          // Enable/Disable navigation buttons
+          document.getElementById("prevBtn").disabled = matches.length === 0;
+          document.getElementById("nextBtn").disabled = matches.length === 0;
+
+          // Highlight the first match
+          if (matches.length > 0) {
+            matches[0].scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+            matches[0].classList.add("highlight");
+          }
+        });
+
+        searchBar.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            if (matches.length > 0) {
+              matches[currentIndex].classList.remove("highlight");
+              currentIndex = (currentIndex + 1) % matches.length;
+              matches[currentIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              matches[currentIndex].classList.add("highlight");
+            }
+          }
+        });
+
+        document
+          .getElementById("prevBtn")
+          .addEventListener("click", function () {
+            if (matches.length > 0) {
+              matches[currentIndex].classList.remove("highlight");
+              currentIndex =
+                (currentIndex - 1 + matches.length) % matches.length;
+              matches[currentIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              matches[currentIndex].classList.add("highlight");
+              searchBar.focus();
+            }
+          });
+
+        document
+          .getElementById("nextBtn")
+          .addEventListener("click", function () {
+            if (matches.length > 0) {
+              matches[currentIndex].classList.remove("highlight");
+              currentIndex = (currentIndex + 1) % matches.length;
+              matches[currentIndex].scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              matches[currentIndex].classList.add("highlight");
+              searchBar.focus();
+            }
+          });
+      }
+
+      // Load the Markdown file when the page loads
+      window.onload = loadMarkdown;
+    </script>
+
+    <script>
+      if ("serviceWorker" in navigator && "PushManager" in window) {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(function (registration) {
+            console.log(
+              "Service Worker registered with scope:",
+              registration.scope
+            );
+
+            // // Request notification permission
+            // return Notification.requestPermission().then(function (permission) {
+            //   if (permission === "granted") {
+            //     console.log("Notification permission granted");
+
+            //     // Subscribe to push service
+            //     return registration.pushManager.subscribe({
+            //       userVisibleOnly: true,
+            //       applicationServerKey: urlBase64ToUint8Array(
+            //         "BP11HuUNHprZ2kWPKUxmnpxoJGrAq_HR7QvGMZZRuVa9RKZIkTlYrRU9AcESFnC1mLmMAIpp4FwWNvRoKTZ2Hbc"
+            //       ),
+            //     });
+            //   } else {
+            //     console.log("Notification permission denied");
+            //   }
+            // });
+          })
+          .then(function (subscription) {
+            if (subscription) {
+              const keys = subscription.getKey
+                ? {
+                    p256dh: btoa(
+                      String.fromCharCode.apply(
+                        null,
+                        new Uint8Array(subscription.getKey("p256dh"))
+                      )
+                    ),
+                    auth: btoa(
+                      String.fromCharCode.apply(
+                        null,
+                        new Uint8Array(subscription.getKey("auth"))
+                      )
+                    ),
+                  }
+                : {};
+
+              // console.log("Push subscription:", subscription);
+              // console.log("Push service endpoint:", subscription.endpoint);
+              // console.log("Push service p256dh key:", keys.p256dh);
+              // console.log("Push service auth key:", keys.auth);
+            }
+          })
+          .catch(function (error) {
+            console.log(
+              "Service Worker registration or push subscription failed:",
+              error
+            );
+          });
+      }
+
+      // Utility function to convert VAPID key
+      function urlBase64ToUint8Array(base64String) {
+        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding)
+          .replace(/-/g, "+")
+          .replace(/_/g, "/");
+
+        try {
+          const rawData = window.atob(base64);
+          const outputArray = new Uint8Array(rawData.length);
+
+          for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+          }
+          return outputArray;
+        } catch (e) {
+          console.error("Invalid base64 string:", base64);
+          throw new Error("Invalid base64 string");
+        }
+      }
+    </script>
+
+    <script>
+      let deferredPrompt;
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+
+        // Show the install popup after 30 seconds if not dismissed
+        if (!localStorage.getItem("installDismissed")) {
+          setTimeout(() => {
+            const installPopup = document.getElementById("install-popup");
+            installPopup.style.display = "block";
+          }, 30000);
+        }
+      });
+
+      // Handle the install button click
+      document.getElementById("install-btn").addEventListener("click", () => {
+        // Hide the install popup
+        const installPopup = document.getElementById("install-popup");
+        installPopup.style.display = "none";
+
+        // Show the install prompt
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === "accepted") {
+              console.log("User accepted the install prompt");
+            } else {
+              console.log("User dismissed the install prompt");
+            }
+            deferredPrompt = null;
+          });
+        }
+      });
+
+      // Handle the dismiss button click
+      document.getElementById("dismiss-btn").addEventListener("click", () => {
+        // Hide the install popup and set localStorage to prevent it from showing again
+        const installPopup = document.getElementById("install-popup");
+        installPopup.style.display = "none";
+        console.log("User dismissed the install popup permanently");
+        localStorage.setItem("installDismissed", "true");
+      });
+    </script>
+    <!-- <script>
+      // Request notification permission at launch
+      window.addEventListener("load", () => {
+        if (
+          Notification.permission !== "granted" &&
+          Notification.permission !== "denied"
+        ) {
+          Notification.requestPermission().then(function (permission) {
+            if (permission === "granted") {
+              console.log("Notification permission granted at launch");
+            } else {
+              console.log("Notification permission denied at launch");
+            }
+          });
+        }
+      });
+    </script> -->
+  </body>
+</html>
