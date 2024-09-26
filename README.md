@@ -9,7 +9,7 @@
 Here is my first post 😁
 
 
-## My Portfolio
+## Portfolio
 
 ### [Wright City Sports](https://wrightcitysports.org)
 
