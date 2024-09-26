@@ -1,7 +1,8 @@
-# Coaching Library
+# Jon Maestas
 
 ```
-vim public/content.md
+vim content.md
 python -m http.server 8000
 ```
-🤯
+
+# 🤯
