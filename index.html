@@ -82,25 +82,6 @@
       <!-- Markdown content will be rendered here -->
     </div>
 
-    <div
-      id="install-popup"
-      style="
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 15px;
-        border: 1px solid #ccc;
-        background-color: rgba(0, 0, 0, 0.8);
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
-      "
-    >
-      <p>Install for quick reference later.</p>
-      <button class="outline" id="install-btn">Install</button>
-      <button class="outline" id="dismiss-btn">Dismiss</button>
-    </div>
-
     <script>
       let currentIndex = 0;
       let matches = [];
@@ -341,70 +322,5 @@
         }
       }
     </script>
-
-    <script>
-      let deferredPrompt;
-
-      window.addEventListener("beforeinstallprompt", (e) => {
-        // Prevent the mini-infobar from appearing on mobile
-        e.preventDefault();
-        // Stash the event so it can be triggered later
-        deferredPrompt = e;
-
-        // Show the install popup after 30 seconds if not dismissed
-        if (!localStorage.getItem("installDismissed")) {
-          setTimeout(() => {
-            const installPopup = document.getElementById("install-popup");
-            installPopup.style.display = "block";
-          }, 30000);
-        }
-      });
-
-      // Handle the install button click
-      document.getElementById("install-btn").addEventListener("click", () => {
-        // Hide the install popup
-        const installPopup = document.getElementById("install-popup");
-        installPopup.style.display = "none";
-
-        // Show the install prompt
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === "accepted") {
-              console.log("User accepted the install prompt");
-            } else {
-              console.log("User dismissed the install prompt");
-            }
-            deferredPrompt = null;
-          });
-        }
-      });
-
-      // Handle the dismiss button click
-      document.getElementById("dismiss-btn").addEventListener("click", () => {
-        // Hide the install popup and set localStorage to prevent it from showing again
-        const installPopup = document.getElementById("install-popup");
-        installPopup.style.display = "none";
-        console.log("User dismissed the install popup permanently");
-        localStorage.setItem("installDismissed", "true");
-      });
-    </script>
-    <!-- <script>
-      // Request notification permission at launch
-      window.addEventListener("load", () => {
-        if (
-          Notification.permission !== "granted" &&
-          Notification.permission !== "denied"
-        ) {
-          Notification.requestPermission().then(function (permission) {
-            if (permission === "granted") {
-              console.log("Notification permission granted at launch");
-            } else {
-              console.log("Notification permission denied at launch");
-            }
-          });
-        }
-      });
-    </script> -->
   </body>
 </html>
