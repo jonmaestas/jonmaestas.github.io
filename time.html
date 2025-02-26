@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rosewood Building Group</title>
+    <title>Rosewood Building Group - Time Logger</title>
     <style>
         :root {
             --primary-color: #6b4226;
@@ -156,6 +156,77 @@
             border: 1px solid var(--error-color);
         }
         
+        /* Job history styles */
+        .job-history {
+            position: relative;
+        }
+        
+        .job-history-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .job-history-dropdown {
+            width: 100%;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        
+        .job-history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .job-history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .job-history-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .job-history-remove {
+            color: #F44336;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 8px;
+        }
+        
+        .job-history-toggle {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Date picker styles */
+        .date-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .date-input {
+            flex: 1;
+            text-align: center;
+        }
+        
         .history {
             margin-top: 30px;
             display: none;
@@ -164,6 +235,19 @@
         .history h3 {
             color: var(--secondary-color);
             margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-date-selector {
+            font-size: 14px;
+            color: var(--text-color);
+            font-weight: normal;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
         
         .history-list {
@@ -176,7 +260,7 @@
         }
         
         .history-item {
-            border-bottom: a1px solid #eee;
+            border-bottom: 1px solid #eee;
             padding: 10px;
             margin-bottom: 10px;
         }
@@ -195,11 +279,9 @@
             font-weight: bold;
         }
         
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: var(--secondary-color);
-            font-size: 14px;
+        .history-date {
+            font-size: 12px;
+            color: #666;
         }
         
         @media (max-width: 480px) {
@@ -246,6 +328,7 @@
 <body>
     <header>
         <div class="logo">Rosewood Building Group</div>
+        <h1>Time Logger</h1>
         <h2>Track Your Work Hours</h2>
     </header>
     
@@ -257,8 +340,21 @@
             </div>
             
             <div class="form-group">
-                <label for="jobName">Job Name/House # + Street:</label>
+                <label for="entryDate">Date:</label>
+                <div class="date-container">
+                    <input type="date" id="entryDate" class="date-input" required>
+                </div>
+            </div>
+            
+            <div class="form-group job-history">
+                <div class="job-history-label">
+                    <label for="jobName">Job Name/House # + Street:</label>
+                    <button type="button" class="job-history-toggle" id="showJobHistory">History</button>
+                </div>
                 <input type="text" id="jobName" placeholder="Enter job name or house address" required>
+                <div class="job-history-dropdown" id="jobHistoryDropdown">
+                    <!-- Job history items will be added here via JavaScript -->
+                </div>
             </div>
             
             <div class="form-group">
@@ -350,10 +446,22 @@
         </div>
         
         <div class="history" id="historySection">
-            <h3>Today's Entries</h3>
+            <h3>
+                Recent Entries
+                <select id="historyDateSelector" class="history-date-selector">
+                    <!-- Date options will be added here via JavaScript -->
+                </select>
+            </h3>
             <div class="history-list" id="historyList">
                 <!-- Entries will be added here via JavaScript -->
             </div>
+        </div>
+        
+        <div class="sync-section" id="syncSection">
+            <button type="button" class="sync-button" id="syncButton">
+                <span>Sync to Google Sheets</span>
+            </button>
+            <div class="sync-status" id="syncStatus"></div>
         </div>
     </main>
     
@@ -382,22 +490,111 @@
                 employeeNameInput.value = savedName;
             }
             
-            // Initialize today's entries
-            let todaysEntries = [];
-            const today = new Date().toLocaleDateString();
+            // Manage entries storage with date boundaries
+            const MAX_ENTRY_DAYS = 14; // Keep entries for 2 weeks
+            let allEntries = {}; // Object to store entries by date
             
-            // Load today's entries from localStorage
-            const loadTodaysEntries = () => {
-                const savedEntries = localStorage.getItem(`timeEntries_${today}`);
-                if (savedEntries) {
-                    todaysEntries = JSON.parse(savedEntries);
-                    updateHistoryDisplay();
+            // Load all entries from localStorage
+            const loadAllEntries = () => {
+                // Clear old entries first
+                allEntries = {};
+                
+                // Get all localStorage keys
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    
+                    // Only load time entries
+                    if (key && key.startsWith('timeEntries_')) {
+                        const dateStr = key.replace('timeEntries_', '');
+                        const entries = JSON.parse(localStorage.getItem(key));
+                        allEntries[dateStr] = entries;
+                    }
+                }
+                
+                // Clean up old entries (older than MAX_ENTRY_DAYS)
+                cleanupOldEntries();
+                
+                // Update history date selector
+                updateHistoryDateSelector();
+            };
+            
+            // Clean up entries older than MAX_ENTRY_DAYS
+            const cleanupOldEntries = () => {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - MAX_ENTRY_DAYS);
+                
+                Object.keys(allEntries).forEach(dateStr => {
+                    const entryDate = new Date(dateStr);
+                    if (entryDate < cutoffDate) {
+                        delete allEntries[dateStr];
+                        localStorage.removeItem(`timeEntries_${dateStr}`);
+                    }
+                });
+            };
+            
+            // Update history date selector with available dates
+            const updateHistoryDateSelector = () => {
+                historyDateSelector.innerHTML = '';
+                
+                // Sort dates in reverse chronological order
+                const sortedDates = Object.keys(allEntries).sort().reverse();
+                
+                if (sortedDates.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No entries';
+                    historyDateSelector.appendChild(option);
+                    historySection.style.display = 'none';
+                    return;
+                }
+                
+                // Add options for each date
+                sortedDates.forEach(dateStr => {
+                    const date = new Date(dateStr);
+                    const option = document.createElement('option');
+                    option.value = dateStr;
+                    option.textContent = date.toLocaleDateString(undefined, { 
+                        weekday: 'short', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    historyDateSelector.appendChild(option);
+                });
+                
+                // Show history section if we have entries
+                if (sortedDates.length > 0) {
+                    historySection.style.display = 'block';
+                    updateHistoryDisplay(sortedDates[0]); // Show most recent by default
+                } else {
+                    historySection.style.display = 'none';
                 }
             };
             
-            // Save entries to localStorage
-            const saveEntries = () => {
-                localStorage.setItem(`timeEntries_${today}`, JSON.stringify(todaysEntries));
+            // Listen for date selection changes
+            historyDateSelector.addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    updateHistoryDisplay(selectedDate);
+                }
+            });
+            
+            // Save entry to storage
+            const saveEntry = (entry) => {
+                const dateStr = entry.date;
+                
+                // Initialize array if doesn't exist
+                if (!allEntries[dateStr]) {
+                    allEntries[dateStr] = [];
+                }
+                
+                // Add entry to array
+                allEntries[dateStr].push(entry);
+                
+                // Save to localStorage
+                localStorage.setItem(`timeEntries_${dateStr}`, JSON.stringify(allEntries[dateStr]));
+                
+                // Update history display
+                updateHistoryDateSelector();
             };
             
             // Update history display
@@ -457,20 +654,26 @@
                 const employeeName = employeeNameInput.value.trim();
                 localStorage.setItem('employeeName', employeeName);
                 
+                // Save job to recent jobs
+                const jobName = jobNameInput.value.trim();
+                addToRecentJobs(jobName);
+                
+                // Format selected date to string for storage
+                const selectedDate = new Date(entryDateInput.value);
+                const dateStr = selectedDate.toLocaleDateString();
+                
                 // Create entry object
                 const newEntry = {
                     employeeName: employeeName,
-                    jobName: jobNameInput.value.trim(),
+                    jobName: jobName,
                     hours: parseFloat(hoursInput.value).toFixed(2),
                     notes: workNotesInput.value.trim(),
                     timestamp: new Date().toLocaleTimeString(),
-                    date: today
+                    date: dateStr
                 };
                 
-                // Add to today's entries
-                todaysEntries.push(newEntry);
-                saveEntries();
-                updateHistoryDisplay();
+                // Save the entry
+                saveEntry(newEntry);
                 
                 // Show success message
                 successMessage.style.display = 'block';
@@ -480,6 +683,7 @@
                 jobNameInput.value = '';
                 hoursInput.value = '8.00';
                 workNotesInput.value = '';
+                entryDateInput.value = todayFormatted; // Reset to today
                 
                 // Hide success message after delay
                 setTimeout(() => {
@@ -487,8 +691,9 @@
                 }, 3000);
             });
             
-            // Load entries on page load
-            loadTodaysEntries();
+            // Initialize data on page load
+            loadRecentJobs();
+            loadAllEntries();
         });
     </script>
 </body>
