@@ -173,4 +173,501 @@
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        
+        .job-history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        
+        .job-history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .job-history-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .job-history-toggle {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .date-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .date-input {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .history {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .history h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-date-selector {
+            font-size: 14px;
+            color: var(--text-color);
+            font-weight: normal;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        .history-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .history-job {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .history-time {
+            font-weight: bold;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            button {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+            
+            input, select, textarea {
+                font-size: 16px;
+            }
+            
+            .hours-select {
+                font-size: 18px;
+            }
+            
+            .form-group {
+                margin-bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Rosewood Building Group</div>
+        <h1>Time Logger</h1>
+        <h2>Track Your Work Hours</h2>
+    </header>
+    
+    <main class="container">
+        <form id="timeLogForm">
+            <div class="form-group" id="nameGroup">
+                <label for="employeeName">Your Name:</label>
+                <input type="text" id="employeeName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="entryDate">Date:</label>
+                <div class="date-container">
+                    <input type="date" id="entryDate" class="date-input" required>
+                </div>
+            </div>
+            
+            <div class="form-group job-history">
+                <div class="job-history-label">
+                    <label for="jobName">Job Name/House # + Street:</label>
+                    <button type="button" class="job-history-toggle" id="showJobHistory">History</button>
+                </div>
+                <input type="text" id="jobName" placeholder="Enter job name or house address" required>
+                <div class="job-history-dropdown" id="jobHistoryDropdown">
+                    <!-- Job history items will be added here via JavaScript -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="hours">Hours Worked:</label>
+                <div class="time-input-container">
+                    <select id="hours" class="hours-select" required>
+                        <option value="0.25">0.25</option>
+                        <option value="0.50">0.50</option>
+                        <option value="0.75">0.75</option>
+                        <option value="1.00">1.00</option>
+                        <option value="1.25">1.25</option>
+                        <option value="1.50">1.50</option>
+                        <option value="1.75">1.75</option>
+                        <option value="2.00">2.00</option>
+                        <option value="2.25">2.25</option>
+                        <option value="2.50">2.50</option>
+                        <option value="2.75">2.75</option>
+                        <option value="3.00">3.00</option>
+                        <option value="3.25">3.25</option>
+                        <option value="3.50">3.50</option>
+                        <option value="3.75">3.75</option>
+                        <option value="4.00">4.00</option>
+                        <option value="4.25">4.25</option>
+                        <option value="4.50">4.50</option>
+                        <option value="4.75">4.75</option>
+                        <option value="5.00">5.00</option>
+                        <option value="5.25">5.25</option>
+                        <option value="5.50">5.50</option>
+                        <option value="5.75">5.75</option>
+                        <option value="6.00">6.00</option>
+                        <option value="6.25">6.25</option>
+                        <option value="6.50">6.50</option>
+                        <option value="6.75">6.75</option>
+                        <option value="7.00">7.00</option>
+                        <option value="7.25">7.25</option>
+                        <option value="7.50">7.50</option>
+                        <option value="7.75">7.75</option>
+                        <option value="8.00" selected>8.00</option>
+                        <option value="8.25">8.25</option>
+                        <option value="8.50">8.50</option>
+                        <option value="8.75">8.75</option>
+                        <option value="9.00">9.00</option>
+                        <option value="9.25">9.25</option>
+                        <option value="9.50">9.50</option>
+                        <option value="9.75">9.75</option>
+                        <option value="10.00">10.00</option>
+                        <option value="10.25">10.25</option>
+                        <option value="10.50">10.50</option>
+                        <option value="10.75">10.75</option>
+                        <option value="11.00">11.00</option>
+                        <option value="11.25">11.25</option>
+                        <option value="11.50">11.50</option>
+                        <option value="11.75">11.75</option>
+                        <option value="12.00">12.00</option>
+                        <option value="12.25">12.25</option>
+                        <option value="12.50">12.50</option>
+                        <option value="12.75">12.75</option>
+                        <option value="13.00">13.00</option>
+                        <option value="13.25">13.25</option>
+                        <option value="13.50">13.50</option>
+                        <option value="13.75">13.75</option>
+                        <option value="14.00">14.00</option>
+                        <option value="14.25">14.25</option>
+                        <option value="14.50">14.50</option>
+                        <option value="14.75">14.75</option>
+                        <option value="15.00">15.00</option>
+                        <option value="15.25">15.25</option>
+                        <option value="15.50">15.50</option>
+                        <option value="15.75">15.75</option>
+                        <option value="16.00">16.00</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="workNotes">Work Notes:</label>
+                <textarea id="workNotes" placeholder="Brief description of work completed" required></textarea>
+            </div>
+            
+            <button type="submit">Submit Time</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            Time entry successfully submitted!
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            Please fill out all fields correctly.
+        </div>
+        
+        <div class="history" id="historySection">
+            <h3>
+                Recent Entries
+                <select id="historyDateSelector" class="history-date-selector">
+                    <!-- Date options will be added here via JavaScript -->
+                </select>
+            </h3>
+            <div class="history-list" id="historyList">
+                <!-- Entries will be added here via JavaScript -->
+            </div>
+        </div>
+        
+        <div class="sync-section" id="syncSection">
+            <button type="button" class="sync-button" id="syncButton">
+                <span>Sync to Google Sheets</span>
+            </button>
+            <div class="sync-status" id="syncStatus"></div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        © 2025 Rosewood Building Group
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const form = document.getElementById('timeLogForm');
+            const employeeNameInput = document.getElementById('employeeName');
+            const entryDateInput = document.getElementById('entryDate');
+            const jobNameInput = document.getElementById('jobName');
+            const hoursInput = document.getElementById('hours');
+            const workNotesInput = document.getElementById('workNotes');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const historySection = document.getElementById('historySection');
+            const historyList = document.getElementById('historyList');
+            const historyDateSelector = document.getElementById('historyDateSelector');
+            const showJobHistoryButton = document.getElementById('showJobHistory');
+            const jobHistoryDropdown = document.getElementById('jobHistoryDropdown');
+
+            // Set today's date
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            entryDateInput.value = todayFormatted;
+
+            // Load saved employee name
+            const savedName = localStorage.getItem('employeeName');
+            if (savedName) {
+                employeeNameInput.value = savedName;
+            }
+
+            // Constants for storage management
+            const MAX_ENTRY_DAYS = 14; // Keep entries for 2 weeks
+            const RECENT_JOBS_KEY = 'recentJobs';
+            const MAX_RECENT_JOBS = 10;
+            let allEntries = {}; // Object to store entries by date
+
+            // Load all entries from localStorage
+            const loadAllEntries = () => {
+                allEntries = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('timeEntries_')) {
+                        const dateStr = key.replace('timeEntries_', '');
+                        allEntries[dateStr] = JSON.parse(localStorage.getItem(key));
+                    }
+                }
+                cleanupOldEntries();
+                updateHistoryDateSelector();
+            };
+
+            // Clean up entries older than MAX_ENTRY_DAYS
+            const cleanupOldEntries = () => {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - MAX_ENTRY_DAYS);
+                Object.keys(allEntries).forEach(dateStr => {
+                    const entryDate = new Date(dateStr);
+                    if (entryDate < cutoffDate) {
+                        delete allEntries[dateStr];
+                        localStorage.removeItem(`timeEntries_${dateStr}`);
+                    }
+                });
+            };
+
+            // Update history date selector
+            const updateHistoryDateSelector = () => {
+                historyDateSelector.innerHTML = '';
+                const sortedDates = Object.keys(allEntries).sort().reverse();
+                if (sortedDates.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No entries';
+                    historyDateSelector.appendChild(option);
+                    historySection.style.display = 'none';
+                    return;
+                }
+                sortedDates.forEach(dateStr => {
+                    const date = new Date(dateStr);
+                    const option = document.createElement('option');
+                    option.value = dateStr;
+                    option.textContent = date.toLocaleDateString(undefined, { 
+                        weekday: 'short', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    historyDateSelector.appendChild(option);
+                });
+                historySection.style.display = 'block';
+                updateHistoryDisplay(sortedDates[0]); // Show most recent by default
+            };
+
+            // Listen for date selection changes
+            historyDateSelector.addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    updateHistoryDisplay(selectedDate);
+                }
+            });
+
+            // Update history display for a specific date
+            const updateHistoryDisplay = (dateStr) => {
+                const entries = allEntries[dateStr] || [];
+                historyList.innerHTML = '';
+                if (entries.length > 0) {
+                    historySection.style.display = 'block';
+                    entries.forEach(entry => {
+                        const entryElement = document.createElement('div');
+                        entryElement.className = 'history-item';
+                        entryElement.innerHTML = `
+                            <div class="history-job">${entry.jobName}</div>
+                            <div class="history-time">${entry.hours} hours</div>
+                            <div>${entry.notes}</div>
+                            <div><small>Submitted at ${entry.timestamp}</small></div>
+                        `;
+                        historyList.appendChild(entryElement);
+                    });
+                } else {
+                    historySection.style.display = 'none';
+                }
+            };
+
+            // Save entry to storage
+            const saveEntry = (entry) => {
+                const dateStr = entry.date;
+                if (!allEntries[dateStr]) {
+                    allEntries[dateStr] = [];
+                }
+                allEntries[dateStr].push(entry);
+                localStorage.setItem(`timeEntries_${dateStr}`, JSON.stringify(allEntries[dateStr]));
+                updateHistoryDateSelector();
+            };
+
+            // Load recent jobs into dropdown
+            const loadRecentJobs = () => {
+                const recentJobs = JSON.parse(localStorage.getItem(RECENT_JOBS_KEY)) || [];
+                jobHistoryDropdown.innerHTML = '';
+                recentJobs.forEach(job => {
+                    const item = document.createElement('div');
+                    item.className = 'job-history-item';
+                    item.textContent = job;
+                    item.addEventListener('click', () => {
+                        jobNameInput.value = job;
+                        jobHistoryDropdown.style.display = 'none';
+                    });
+                    jobHistoryDropdown.appendChild(item);
+                });
+            };
+
+            // Add job to recent jobs list
+            const addToRecentJobs = (jobName) => {
+                let recentJobs = JSON.parse(localStorage.getItem(RECENT_JOBS_KEY)) || [];
+                recentJobs = recentJobs.filter(job => job !== jobName);
+                recentJobs.unshift(jobName);
+                if (recentJobs.length > MAX_RECENT_JOBS) {
+                    recentJobs.pop();
+                }
+                localStorage.setItem(RECENT_JOBS_KEY, JSON.stringify(recentJobs));
+                loadRecentJobs();
+            };
+
+            // Toggle job history dropdown
+            showJobHistoryButton.addEventListener('click', () => {
+                jobHistoryDropdown.style.display = 
+                    jobHistoryDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!jobHistoryDropdown.contains(event.target) && event.target !== showJobHistoryButton) {
+                    jobHistoryDropdown.style.display = 'none';
+                }
+            });
+
+            // Form validation
+            const validateForm = () => {
+                const employeeName = employeeNameInput.value.trim();
+                const jobName = jobNameInput.value.trim();
+                const hours = parseFloat(hoursInput.value);
+                const workNotes = workNotesInput.value.trim();
+                return employeeName && jobName && !isNaN(hours) && hours > 0 && workNotes;
+            };
+
+            // Form submission
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!validateForm()) {
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                    setTimeout(() => errorMessage.style.display = 'none', 3000);
+                    return;
+                }
+
+                const employeeName = employeeNameInput.value.trim();
+                localStorage.setItem('employeeName', employeeName);
+                const jobName = jobNameInput.value.trim();
+                addToRecentJobs(jobName);
+                
+                const dateStr = entryDateInput.value; // Consistent "YYYY-MM-DD" format
+                const newEntry = {
+                    employeeName,
+                    jobName,
+                    hours: parseFloat(hoursInput.value).toFixed(2),
+                    notes: workNotesInput.value.trim(),
+                    timestamp: new Date().toLocaleTimeString(),
+                    date: dateStr
+                };
+
+                saveEntry(newEntry);
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+
+                // Reset form (except name)
+                jobNameInput.value = '';
+                hoursInput.value = '8.00';
+                workNotesInput.value = '';
+                entryDateInput.value = todayFormatted;
+
+                setTimeout(() => successMessage.style.display = 'none', 3000);
+            });
+
+            // Initialize on page load
+            loadRecentJobs();
+            loadAllEntries();
+        });
+    </script>
+</body>
+</html>
