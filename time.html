@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rosewood Building Group</title>
+    <style>
+        :root {
+            --primary-color: #6b4226;
+            --secondary-color: #8d694a;
+            --accent-color: #a1764c;
+            --background-color: #f9f6f2;
+            --text-color: #333;
+            --success-color: #4CAF50;
+            --error-color: #F44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 20px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .time-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .hours-select {
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+            padding: 15px;
+            font-size: 20px;
+            text-align: center;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: var(--primary-color);
+            font-weight: bold;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236b4226%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .success-message, .error-message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        
+        .history {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .history h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        .history-item {
+            border-bottom: a1px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .history-job {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .history-time {
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            button {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+            
+            input, select, textarea {
+                font-size: 16px; /* Prevents iOS zoom on focus */
+            }
+            
+            .hours-select {
+                font-size: 18px;
+            }
+            
+            /* Increase touch target sizes for mobile */
+            label {
+                padding: 5px 0;
+            }
+            
+            .form-group {
+                margin-bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Rosewood Building Group</div>
+        <h2>Track Your Work Hours</h2>
+    </header>
+    
+    <main class="container">
+        <form id="timeLogForm">
+            <div class="form-group" id="nameGroup">
+                <label for="employeeName">Your Name:</label>
+                <input type="text" id="employeeName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="jobName">Job Name/House # + Street:</label>
+                <input type="text" id="jobName" placeholder="Enter job name or house address" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="hours">Hours Worked:</label>
+                <div class="time-input-container">
+                    <select id="hours" class="hours-select" required>
+                        <option value="0.25">0.25</option>
+                        <option value="0.50">0.50</option>
+                        <option value="0.75">0.75</option>
+                        <option value="1.00">1.00</option>
+                        <option value="1.25">1.25</option>
+                        <option value="1.50">1.50</option>
+                        <option value="1.75">1.75</option>
+                        <option value="2.00">2.00</option>
+                        <option value="2.25">2.25</option>
+                        <option value="2.50">2.50</option>
+                        <option value="2.75">2.75</option>
+                        <option value="3.00">3.00</option>
+                        <option value="3.25">3.25</option>
+                        <option value="3.50">3.50</option>
+                        <option value="3.75">3.75</option>
+                        <option value="4.00">4.00</option>
+                        <option value="4.25">4.25</option>
+                        <option value="4.50">4.50</option>
+                        <option value="4.75">4.75</option>
+                        <option value="5.00">5.00</option>
+                        <option value="5.25">5.25</option>
+                        <option value="5.50">5.50</option>
+                        <option value="5.75">5.75</option>
+                        <option value="6.00">6.00</option>
+                        <option value="6.25">6.25</option>
+                        <option value="6.50">6.50</option>
+                        <option value="6.75">6.75</option>
+                        <option value="7.00">7.00</option>
+                        <option value="7.25">7.25</option>
+                        <option value="7.50">7.50</option>
+                        <option value="7.75">7.75</option>
+                        <option value="8.00" selected>8.00</option>
+                        <option value="8.25">8.25</option>
+                        <option value="8.50">8.50</option>
+                        <option value="8.75">8.75</option>
+                        <option value="9.00">9.00</option>
+                        <option value="9.25">9.25</option>
+                        <option value="9.50">9.50</option>
+                        <option value="9.75">9.75</option>
+                        <option value="10.00">10.00</option>
+                        <option value="10.25">10.25</option>
+                        <option value="10.50">10.50</option>
+                        <option value="10.75">10.75</option>
+                        <option value="11.00">11.00</option>
+                        <option value="11.25">11.25</option>
+                        <option value="11.50">11.50</option>
+                        <option value="11.75">11.75</option>
+                        <option value="12.00">12.00</option>
+                        <option value="12.25">12.25</option>
+                        <option value="12.50">12.50</option>
+                        <option value="12.75">12.75</option>
+                        <option value="13.00">13.00</option>
+                        <option value="13.25">13.25</option>
+                        <option value="13.50">13.50</option>
+                        <option value="13.75">13.75</option>
+                        <option value="14.00">14.00</option>
+                        <option value="14.25">14.25</option>
+                        <option value="14.50">14.50</option>
+                        <option value="14.75">14.75</option>
+                        <option value="15.00">15.00</option>
+                        <option value="15.25">15.25</option>
+                        <option value="15.50">15.50</option>
+                        <option value="15.75">15.75</option>
+                        <option value="16.00">16.00</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="workNotes">Work Notes:</label>
+                <textarea id="workNotes" placeholder="Brief description of work completed" required></textarea>
+            </div>
+            
+            <button type="submit">Submit Time</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            Time entry successfully submitted!
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            Please fill out all fields correctly.
+        </div>
+        
+        <div class="history" id="historySection">
+            <h3>Today's Entries</h3>
+            <div class="history-list" id="historyList">
+                <!-- Entries will be added here via JavaScript -->
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        &copy; 2025 Rosewood Building Group
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const form = document.getElementById('timeLogForm');
+            const employeeNameInput = document.getElementById('employeeName');
+            const jobNameInput = document.getElementById('jobName');
+            const hoursInput = document.getElementById('hours');
+            const workNotesInput = document.getElementById('workNotes');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const historySection = document.getElementById('historySection');
+            const historyList = document.getElementById('historyList');
+            const nameGroup = document.getElementById('nameGroup');
+            const timeButtons = document.querySelectorAll('.time-btn');
+            
+            // Load saved employee name
+            const savedName = localStorage.getItem('employeeName');
+            if (savedName) {
+                employeeNameInput.value = savedName;
+            }
+            
+            // Initialize today's entries
+            let todaysEntries = [];
+            const today = new Date().toLocaleDateString();
+            
+            // Load today's entries from localStorage
+            const loadTodaysEntries = () => {
+                const savedEntries = localStorage.getItem(`timeEntries_${today}`);
+                if (savedEntries) {
+                    todaysEntries = JSON.parse(savedEntries);
+                    updateHistoryDisplay();
+                }
+            };
+            
+            // Save entries to localStorage
+            const saveEntries = () => {
+                localStorage.setItem(`timeEntries_${today}`, JSON.stringify(todaysEntries));
+            };
+            
+            // Update history display
+            const updateHistoryDisplay = () => {
+                if (todaysEntries.length > 0) {
+                    historySection.style.display = 'block';
+                    historyList.innerHTML = '';
+                    
+                    todaysEntries.forEach((entry, index) => {
+                        const entryElement = document.createElement('div');
+                        entryElement.className = 'history-item';
+                        entryElement.innerHTML = `
+                            <div class="history-job">${entry.jobName}</div>
+                            <div class="history-time">${entry.hours} hours</div>
+                            <div>${entry.notes}</div>
+                            <div><small>Submitted at ${entry.timestamp}</small></div>
+                        `;
+                        historyList.appendChild(entryElement);
+                    });
+                } else {
+                    historySection.style.display = 'none';
+                }
+            };
+            
+            // No additional JavaScript needed for the native dropdown
+            
+            // Form validation
+            const validateForm = () => {
+                const employeeName = employeeNameInput.value.trim();
+                const jobName = jobNameInput.value.trim();
+                const hours = parseFloat(hoursInput.value);
+                const workNotes = workNotesInput.value.trim();
+                
+                if (!employeeName || !jobName || isNaN(hours) || hours <= 0 || !workNotes) {
+                    return false;
+                }
+                
+                return true;
+            };
+            
+            // Removed custom time wheel code as we're using native mobile select
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                    return;
+                }
+                
+                // Save employee name
+                const employeeName = employeeNameInput.value.trim();
+                localStorage.setItem('employeeName', employeeName);
+                
+                // Create entry object
+                const newEntry = {
+                    employeeName: employeeName,
+                    jobName: jobNameInput.value.trim(),
+                    hours: parseFloat(hoursInput.value).toFixed(2),
+                    notes: workNotesInput.value.trim(),
+                    timestamp: new Date().toLocaleTimeString(),
+                    date: today
+                };
+                
+                // Add to today's entries
+                todaysEntries.push(newEntry);
+                saveEntries();
+                updateHistoryDisplay();
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                // Reset form (except name)
+                jobNameInput.value = '';
+                hoursInput.value = '8.00';
+                workNotesInput.value = '';
+                
+                // Hide success message after delay
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+            });
+            
+            // Load entries on page load
+            loadTodaysEntries();
+        });
+    </script>
+</body>
+</html>
