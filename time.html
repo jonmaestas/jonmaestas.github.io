@@ -375,16 +375,15 @@
 
         const dateStr = entryDateInput.value;
         const entry = {
-          employeeName: employeeNameInput.value.trim(),
           jobName: jobNameInput.value.trim(),
+          date: dateStr,
+          employeeName: employeeNameInput.value.trim(),
           hours: parseFloat(hoursInput.value).toFixed(2),
-          notes: workNotesInput.value.trim(),
-          timestamp: new Date().toLocaleTimeString(),
-          date: dateStr
+          notes: workNotesInput.value.trim()
         };
 
         // Send POST request to App Script
-        fetch('https://script.google.com/macros/s/AKfycbxZsgsFHt8bpdHiPMzJ-j00xALXKzgAdlKA9cZjwIaechl3t5tR_6sSN1RB_peYuVxTPA/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbzZlyX8jjixaZcMpWxqB5H0ZGJNpO6ycmqtp55ivxEg3LBDA7B51QuvYOC3MlJAafOqcw/exec', {
             method: 'POST',
             redirect: "follow",
             headers: {
@@ -395,7 +394,21 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-            console.log('Data saved successfully');
+              console.log('Data saved successfully');
+              // Save entry to localStorage for the specific date
+              const dateKey = `timeEntries_${dateStr}`;
+              const existingEntries = JSON.parse(localStorage.getItem(dateKey)) || [];
+              existingEntries.push(entry);
+              localStorage.setItem(dateKey, JSON.stringify(existingEntries));
+      
+              localStorage.setItem('employeeName', employeeNameInput.value.trim());
+              form.reset();
+              entryDateInput.value = todayFormatted;
+              employeeNameInput.value = localStorage.getItem('employeeName') || '';
+              successMessage.style.display = 'block';
+              errorMessage.style.display = 'none';
+              setTimeout(() => (successMessage.style.display = 'none'), 3000);
+              loadEntries();
           } else {
             console.error('Error saving data:', data.message);
           }
@@ -403,21 +416,6 @@
         .catch(error => {
           console.error('Error:', error);
         });
-
-        // Save entry to localStorage for the specific date
-        const dateKey = `timeEntries_${dateStr}`;
-        const existingEntries = JSON.parse(localStorage.getItem(dateKey)) || [];
-        existingEntries.push(entry);
-        localStorage.setItem(dateKey, JSON.stringify(existingEntries));
-
-        localStorage.setItem('employeeName', employeeNameInput.value.trim());
-        form.reset();
-        entryDateInput.value = todayFormatted;
-        employeeNameInput.value = localStorage.getItem('employeeName') || '';
-        successMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-        setTimeout(() => (successMessage.style.display = 'none'), 3000);
-        loadEntries();
       });
 
       // Initial Load
