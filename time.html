@@ -222,7 +222,9 @@
 
       <div class="form-group">
         <label for="jobName">Job Name/House # + Street:</label>
-        <input type="text" id="jobName" placeholder="Enter job name or house address" required />
+        <!-- Input now includes a datalist for recent entries -->
+        <input list="jobNameList" id="jobName" placeholder="Enter job name or house address" required />
+        <datalist id="jobNameList"></datalist>
         <span class="error-message field-error" id="jobError"></span>
       </div>
 
@@ -235,7 +237,7 @@
 
       <div class="form-group">
         <label for="workNotes">Work Notes:</label>
-        <!-- Work Notes is now optional -->
+        <!-- Work Notes remains optional -->
         <textarea id="workNotes" placeholder="Brief description of work completed"></textarea>
       </div>
 
@@ -302,6 +304,7 @@
         // Sort entries by date (most recent first)
         allEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
         updateHistoryDisplay();
+        updateJobNameDatalist();
       };
 
       // Update the history display to show recent entries
@@ -323,6 +326,26 @@
         } else {
           historySection.style.display = 'none';
         }
+      };
+
+      // Update the job name datalist with unique job names from the past 2 weeks
+      const updateJobNameDatalist = () => {
+        const datalist = document.getElementById('jobNameList');
+        datalist.innerHTML = '';
+        const uniqueJobNames = new Set();
+        let twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(today.getDate() - 14);
+        allEntries.forEach(entry => {
+          const entryDate = new Date(entry.date);
+          if (entryDate >= twoWeeksAgo) {
+            uniqueJobNames.add(entry.jobName);
+          }
+        });
+        uniqueJobNames.forEach(jobName => {
+          const option = document.createElement('option');
+          option.value = jobName;
+          datalist.appendChild(option);
+        });
       };
 
       // Validation Functions
