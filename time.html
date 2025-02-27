@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rosewood Building Group - Time Logger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #6b4226;
@@ -14,291 +15,224 @@
             --success-color: #4CAF50;
             --error-color: #F44336;
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
+
+        body.dark-mode {
+            --background-color: #333;
+            --text-color: #f9f6f2;
+            --primary-color: #a1764c;
+            --secondary-color: #8d694a;
+            --accent-color: #6b4226;
+            --success-color: #66bb6a;
+            --error-color: #ef5350;
         }
-        
+
         body {
+            font-family: 'Roboto', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-            touch-action: manipulation;
-            -webkit-text-size-adjust: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        
+
         header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 30px;
         }
-        
+
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 5px;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
-        
+
         h1 {
-            font-size: 28px;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+            margin: 0.5rem 0;
+            font-size: 2rem;
         }
-        
+
         h2 {
-            font-size: 20px;
-            color: var(--secondary-color);
-            margin-bottom: 20px;
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 400;
         }
-        
+
         .container {
             background-color: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
             border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
         }
-        
+
+        body.dark-mode .container {
+            background-color: #444;
+        }
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
-        
+
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
-        
+
         input, select, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 0.75rem;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
-        
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #555;
+            color: var(--text-color);
+            border-color: #666;
+        }
+
         textarea {
             height: 100px;
             resize: vertical;
         }
-        
-        .time-input-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 15px;
-        }
-        
-        .hours-select {
-            display: block;
-            width: 100%;
-            max-width: 250px;
-            margin: 0 auto;
-            padding: 15px;
-            font-size: 20px;
-            text-align: center;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            color: var(--primary-color);
-            font-weight: bold;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236b4226%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 12px;
-        }
-        
+
         button {
-            background-color: var(--primary-color);
+            background-color: var(--accent-color);
             color: white;
+            padding: 0.75rem 1.5rem;
             border: none;
-            padding: 15px 20px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 18px;
-            width: 100%;
+            font-size: 1rem;
             transition: background-color 0.3s;
         }
-        
-        button:hover {
+
+        body.dark-mode button {
             background-color: var(--accent-color);
         }
-        
-        .success-message, .error-message {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
-            text-align: center;
-            font-weight: bold;
-            display: none;
+
+        button:hover {
+            background-color: var(--primary-color);
         }
-        
-        .success-message {
-            background-color: #e8f5e9;
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-        
+
         .error-message {
-            background-color: #ffebee;
             color: var(--error-color);
-            border: 1px solid var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
         }
-        
-        .job-history {
-            position: relative;
-        }
-        
-        .job-history-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        
-        .job-history-dropdown {
-            width: 100%;
-            position: absolute;
-            background-color: white;
-            border: 1px solid #ddd;
+
+        .success-message,
+        .error-message:not(.field-error) {
+            padding: 1rem;
+            margin: 1rem 0;
             border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
             display: none;
         }
-        
-        .job-history-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-        
-        .job-history-item:last-child {
-            border-bottom: none;
-        }
-        
-        .job-history-item:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .job-history-toggle {
-            background-color: var(--secondary-color);
+
+        .success-message {
+            background-color: var(--success-color);
             color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            font-size: 14px;
-            cursor: pointer;
         }
-        
-        .date-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        .error-message:not(.field-error) {
+            background-color: var(--error-color);
+            color: white;
         }
-        
-        .date-input {
-            flex: 1;
-            text-align: center;
-        }
-        
+
         .history {
-            margin-top: 30px;
-            display: none;
+            margin-top: 2rem;
         }
-        
+
         .history h3 {
-            color: var(--secondary-color);
-            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .history-date-selector {
-            font-size: 14px;
-            color: var(--text-color);
-            font-weight: normal;
-            background: white;
-            padding: 5px 10px;
-            border-radius: 5px;
+
+        #historySearch {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             border: 1px solid #ddd;
+            border-radius: 5px;
         }
-        
+
+        #totalHours {
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
         .history-list {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
             max-height: 300px;
             overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: white;
         }
-        
+
+        body.dark-mode .history-list {
+            background-color: #444;
+            border-color: #666;
+        }
+
         .history-item {
+            padding: 1rem;
             border-bottom: 1px solid #eee;
-            padding: 10px;
-            margin-bottom: 10px;
         }
-        
+
         .history-item:last-child {
             border-bottom: none;
-            margin-bottom: 0;
         }
-        
-        .history-job {
-            font-weight: bold;
-            color: var(--primary-color);
+
+        .history-item button {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
         }
-        
-        .history-time {
-            font-weight: bold;
+
+        .sync-section {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
-        
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            h2 {
-                font-size: 18px;
-            }
-            
+
+        .sync-status {
+            font-size: 0.875rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        @media (max-width: 600px) {
             .container {
-                padding: 15px;
+                margin: 1rem;
+                padding: 1rem;
             }
-            
+
             button {
-                padding: 12px 15px;
-                font-size: 16px;
+                width: 100%;
+                margin-bottom: 0.5rem;
             }
-            
-            input, select, textarea {
-                font-size: 16px;
-            }
-            
-            .hours-select {
-                font-size: 18px;
-            }
-            
-            .form-group {
-                margin-bottom: 25px;
+
+            .sync-section {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
     </style>
@@ -309,365 +243,359 @@
         <h1>Time Logger</h1>
         <h2>Track Your Work Hours</h2>
     </header>
-    
+
     <main class="container">
         <form id="timeLogForm">
-            <div class="form-group" id="nameGroup">
+            <div class="form-group">
                 <label for="employeeName">Your Name:</label>
                 <input type="text" id="employeeName" placeholder="Enter your full name" required>
+                <span class="error-message field-error" id="nameError"></span>
             </div>
-            
+
             <div class="form-group">
                 <label for="entryDate">Date:</label>
-                <div class="date-container">
-                    <input type="date" id="entryDate" class="date-input" required>
-                </div>
+                <input type="date" id="entryDate" required>
+                <span class="error-message field-error" id="dateError"></span>
             </div>
-            
-            <div class="form-group job-history">
-                <div class="job-history-label">
-                    <label for="jobName">Job Name/House # + Street:</label>
-                    <button type="button" class="job-history-toggle" id="showJobHistory">History</button>
-                </div>
+
+            <div class="form-group">
+                <label for="jobName">Job Name/House # + Street:</label>
                 <input type="text" id="jobName" placeholder="Enter job name or house address" required>
-                <div class="job-history-dropdown" id="jobHistoryDropdown">
-                    <!-- Job history items will be added here via JavaScript -->
-                </div>
+                <span class="error-message field-error" id="jobError"></span>
             </div>
-            
+
             <div class="form-group">
                 <label for="hours">Hours Worked:</label>
-                <div class="time-input-container">
-                    <select id="hours" class="hours-select" required>
-                        <option value="0.25">0.25</option>
-                        <option value="0.50">0.50</option>
-                        <option value="0.75">0.75</option>
-                        <option value="1.00">1.00</option>
-                        <option value="1.25">1.25</option>
-                        <option value="1.50">1.50</option>
-                        <option value="1.75">1.75</option>
-                        <option value="2.00">2.00</option>
-                        <option value="2.25">2.25</option>
-                        <option value="2.50">2.50</option>
-                        <option value="2.75">2.75</option>
-                        <option value="3.00">3.00</option>
-                        <option value="3.25">3.25</option>
-                        <option value="3.50">3.50</option>
-                        <option value="3.75">3.75</option>
-                        <option value="4.00">4.00</option>
-                        <option value="4.25">4.25</option>
-                        <option value="4.50">4.50</option>
-                        <option value="4.75">4.75</option>
-                        <option value="5.00">5.00</option>
-                        <option value="5.25">5.25</option>
-                        <option value="5.50">5.50</option>
-                        <option value="5.75">5.75</option>
-                        <option value="6.00">6.00</option>
-                        <option value="6.25">6.25</option>
-                        <option value="6.50">6.50</option>
-                        <option value="6.75">6.75</option>
-                        <option value="7.00">7.00</option>
-                        <option value="7.25">7.25</option>
-                        <option value="7.50">7.50</option>
-                        <option value="7.75">7.75</option>
-                        <option value="8.00" selected>8.00</option>
-                        <option value="8.25">8.25</option>
-                        <option value="8.50">8.50</option>
-                        <option value="8.75">8.75</option>
-                        <option value="9.00">9.00</option>
-                        <option value="9.25">9.25</option>
-                        <option value="9.50">9.50</option>
-                        <option value="9.75">9.75</option>
-                        <option value="10.00">10.00</option>
-                        <option value="10.25">10.25</option>
-                        <option value="10.50">10.50</option>
-                        <option value="10.75">10.75</option>
-                        <option value="11.00">11.00</option>
-                        <option value="11.25">11.25</option>
-                        <option value="11.50">11.50</option>
-                        <option value="11.75">11.75</option>
-                        <option value="12.00">12.00</option>
-                        <option value="12.25">12.25</option>
-                        <option value="12.50">12.50</option>
-                        <option value="12.75">12.75</option>
-                        <option value="13.00">13.00</option>
-                        <option value="13.25">13.25</option>
-                        <option value="13.50">13.50</option>
-                        <option value="13.75">13.75</option>
-                        <option value="14.00">14.00</option>
-                        <option value="14.25">14.25</option>
-                        <option value="14.50">14.50</option>
-                        <option value="14.75">14.75</option>
-                        <option value="15.00">15.00</option>
-                        <option value="15.25">15.25</option>
-                        <option value="15.50">15.50</option>
-                        <option value="15.75">15.75</option>
-                        <option value="16.00">16.00</option>
-                    </select>
-                </div>
+                <select id="hours" required title="Select hours in 0.25 increments">
+                    <!-- Populated dynamically in JavaScript -->
+                </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="workNotes">Work Notes:</label>
                 <textarea id="workNotes" placeholder="Brief description of work completed" required></textarea>
+                <span class="error-message field-error" id="notesError"></span>
             </div>
-            
-            <button type="submit">Submit Time</button>
+
+            <button type="submit" id="submitButton">Submit Time</button>
+            <button type="button" id="cancelEdit" style="display: none;">Cancel</button>
         </form>
-        
-        <div class="success-message" id="successMessage">
-            Time entry successfully submitted!
-        </div>
-        
-        <div class="error-message" id="errorMessage">
-            Please fill out all fields correctly.
-        </div>
-        
+
+        <div class="success-message" id="successMessage">Time entry successfully submitted!</div>
+        <div class="error-message" id="errorMessage">Please fill out all fields correctly.</div>
+
         <div class="history" id="historySection">
             <h3>
                 Recent Entries
-                <select id="historyDateSelector" class="history-date-selector">
-                    <!-- Date options will be added here via JavaScript -->
-                </select>
+                <select id="historyDateSelector"></select>
             </h3>
-            <div class="history-list" id="historyList">
-                <!-- Entries will be added here via JavaScript -->
-            </div>
+            <input type="text" id="historySearch" placeholder="Search entries by job or notes">
+            <div id="totalHours"></div>
+            <div class="history-list" id="historyList"></div>
         </div>
-        
+
         <div class="sync-section" id="syncSection">
-            <button type="button" class="sync-button" id="syncButton">
-                <span>Sync to Google Sheets</span>
-            </button>
+            <button type="button" id="syncButton">Sync to Google Sheets</button>
+            <button type="button" id="themeToggle">Toggle Theme</button>
             <div class="sync-status" id="syncStatus"></div>
         </div>
     </main>
-    
-    <footer class="footer">
-        © 2025 Rosewood Building Group
-    </footer>
-    
+
+    <footer class="footer">© 2025 Rosewood Building Group</footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const form = document.getElementById('timeLogForm');
-            const employeeNameInput = document.getElementById('employeeName');
-            const entryDateInput = document.getElementById('entryDate');
-            const jobNameInput = document.getElementById('jobName');
-            const hoursInput = document.getElementById('hours');
-            const workNotesInput = document.getElementById('workNotes');
-            const successMessage = document.getElementById('successMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const historySection = document.getElementById('historySection');
-            const historyList = document.getElementById('historyList');
-            const historyDateSelector = document.getElementById('historyDateSelector');
-            const showJobHistoryButton = document.getElementById('showJobHistory');
-            const jobHistoryDropdown = document.getElementById('jobHistoryDropdown');
+        document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const form = document.getElementById('timeLogForm');
+    const employeeNameInput = document.getElementById('employeeName');
+    const entryDateInput = document.getElementById('entryDate');
+    const jobNameInput = document.getElementById('jobName');
+    const hoursInput = document.getElementById('hours');
+    const workNotesInput = document.getElementById('workNotes');
+    const submitButton = document.getElementById('submitButton');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const historySection = document.getElementById('historySection');
+    const historyDateSelector = document.getElementById('historyDateSelector');
+    const historySearch = document.getElementById('historySearch');
+    const totalHoursDiv = document.getElementById('totalHours');
+    const historyList = document.getElementById('historyList');
+    const syncButton = document.getElementById('syncButton');
+    const themeToggle = document.getElementById('themeToggle');
+    const syncStatus = document.getElementById('syncStatus');
+    const nameError = document.getElementById('nameError');
+    const dateError = document.getElementById('dateError');
+    const jobError = document.getElementById('jobError');
+    const notesError = document.getElementById('notesError');
 
-            // Set today's date
-            const today = new Date();
-            const todayFormatted = today.toISOString().split('T')[0];
-            entryDateInput.value = todayFormatted;
+    // State Variables
+    let allEntries = {};
+    let isEditing = false;
+    let editingDate = null;
+    let editingIndex = null;
+    let searchTerm = '';
 
-            // Load saved employee name
-            const savedName = localStorage.getItem('employeeName');
-            if (savedName) {
-                employeeNameInput.value = savedName;
+    // Initialize Form
+    const today = new Date();
+    const todayFormatted = today.toISOString().split('T')[0];
+    entryDateInput.value = todayFormatted;
+    employeeNameInput.value = localStorage.getItem('employeeName') || '';
+
+    // Populate Hours Dropdown
+    for (let i = 0.25; i <= 24; i += 0.25) {
+        const option = document.createElement('option');
+        option.value = i.toFixed(2);
+        option.textContent = `${i.toFixed(2)} hours`;
+        if (i === 8) option.selected = true;
+        hoursInput.appendChild(option);
+    }
+
+    // Load Entries and Dates
+    const loadEntries = () => {
+        allEntries = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('timeEntries_')) {
+                const date = key.replace('timeEntries_', '');
+                allEntries[date] = JSON.parse(localStorage.getItem(key)) || [];
             }
+        }
+        updateDateSelector();
+        updateHistoryDisplay(todayFormatted);
+    };
 
-            // Constants for storage management
-            const MAX_ENTRY_DAYS = 14; // Keep entries for 2 weeks
-            const RECENT_JOBS_KEY = 'recentJobs';
-            const MAX_RECENT_JOBS = 10;
-            let allEntries = {}; // Object to store entries by date
-
-            // Load all entries from localStorage
-            const loadAllEntries = () => {
-                allEntries = {};
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && key.startsWith('timeEntries_')) {
-                        const dateStr = key.replace('timeEntries_', '');
-                        allEntries[dateStr] = JSON.parse(localStorage.getItem(key));
-                    }
-                }
-                cleanupOldEntries();
-                updateHistoryDateSelector();
-            };
-
-            // Clean up entries older than MAX_ENTRY_DAYS
-            const cleanupOldEntries = () => {
-                const cutoffDate = new Date();
-                cutoffDate.setDate(cutoffDate.getDate() - MAX_ENTRY_DAYS);
-                Object.keys(allEntries).forEach(dateStr => {
-                    const entryDate = new Date(dateStr);
-                    if (entryDate < cutoffDate) {
-                        delete allEntries[dateStr];
-                        localStorage.removeItem(`timeEntries_${dateStr}`);
-                    }
-                });
-            };
-
-            // Update history date selector
-            const updateHistoryDateSelector = () => {
-                historyDateSelector.innerHTML = '';
-                const sortedDates = Object.keys(allEntries).sort().reverse();
-                if (sortedDates.length === 0) {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'No entries';
-                    historyDateSelector.appendChild(option);
-                    historySection.style.display = 'none';
-                    return;
-                }
-                sortedDates.forEach(dateStr => {
-                    const date = new Date(dateStr);
-                    const option = document.createElement('option');
-                    option.value = dateStr;
-                    option.textContent = date.toLocaleDateString(undefined, { 
-                        weekday: 'short', 
-                        month: 'short', 
-                        day: 'numeric' 
-                    });
-                    historyDateSelector.appendChild(option);
-                });
-                historySection.style.display = 'block';
-                updateHistoryDisplay(sortedDates[0]); // Show most recent by default
-            };
-
-            // Listen for date selection changes
-            historyDateSelector.addEventListener('change', function() {
-                const selectedDate = this.value;
-                if (selectedDate) {
-                    updateHistoryDisplay(selectedDate);
-                }
-            });
-
-            // Update history display for a specific date
-            const updateHistoryDisplay = (dateStr) => {
-                const entries = allEntries[dateStr] || [];
-                historyList.innerHTML = '';
-                if (entries.length > 0) {
-                    historySection.style.display = 'block';
-                    entries.forEach(entry => {
-                        const entryElement = document.createElement('div');
-                        entryElement.className = 'history-item';
-                        entryElement.innerHTML = `
-                            <div class="history-job">${entry.jobName}</div>
-                            <div class="history-time">${entry.hours} hours</div>
-                            <div>${entry.notes}</div>
-                            <div><small>Submitted at ${entry.timestamp}</small></div>
-                        `;
-                        historyList.appendChild(entryElement);
-                    });
-                } else {
-                    historySection.style.display = 'none';
-                }
-            };
-
-            // Save entry to storage
-            const saveEntry = (entry) => {
-                const dateStr = entry.date;
-                if (!allEntries[dateStr]) {
-                    allEntries[dateStr] = [];
-                }
-                allEntries[dateStr].push(entry);
-                localStorage.setItem(`timeEntries_${dateStr}`, JSON.stringify(allEntries[dateStr]));
-                updateHistoryDateSelector();
-            };
-
-            // Load recent jobs into dropdown
-            const loadRecentJobs = () => {
-                const recentJobs = JSON.parse(localStorage.getItem(RECENT_JOBS_KEY)) || [];
-                jobHistoryDropdown.innerHTML = '';
-                recentJobs.forEach(job => {
-                    const item = document.createElement('div');
-                    item.className = 'job-history-item';
-                    item.textContent = job;
-                    item.addEventListener('click', () => {
-                        jobNameInput.value = job;
-                        jobHistoryDropdown.style.display = 'none';
-                    });
-                    jobHistoryDropdown.appendChild(item);
-                });
-            };
-
-            // Add job to recent jobs list
-            const addToRecentJobs = (jobName) => {
-                let recentJobs = JSON.parse(localStorage.getItem(RECENT_JOBS_KEY)) || [];
-                recentJobs = recentJobs.filter(job => job !== jobName);
-                recentJobs.unshift(jobName);
-                if (recentJobs.length > MAX_RECENT_JOBS) {
-                    recentJobs.pop();
-                }
-                localStorage.setItem(RECENT_JOBS_KEY, JSON.stringify(recentJobs));
-                loadRecentJobs();
-            };
-
-            // Toggle job history dropdown
-            showJobHistoryButton.addEventListener('click', () => {
-                jobHistoryDropdown.style.display = 
-                    jobHistoryDropdown.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // Hide dropdown when clicking outside
-            document.addEventListener('click', (event) => {
-                if (!jobHistoryDropdown.contains(event.target) && event.target !== showJobHistoryButton) {
-                    jobHistoryDropdown.style.display = 'none';
-                }
-            });
-
-            // Form validation
-            const validateForm = () => {
-                const employeeName = employeeNameInput.value.trim();
-                const jobName = jobNameInput.value.trim();
-                const hours = parseFloat(hoursInput.value);
-                const workNotes = workNotesInput.value.trim();
-                return employeeName && jobName && !isNaN(hours) && hours > 0 && workNotes;
-            };
-
-            // Form submission
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                if (!validateForm()) {
-                    errorMessage.style.display = 'block';
-                    successMessage.style.display = 'none';
-                    setTimeout(() => errorMessage.style.display = 'none', 3000);
-                    return;
-                }
-
-                const employeeName = employeeNameInput.value.trim();
-                localStorage.setItem('employeeName', employeeName);
-                const jobName = jobNameInput.value.trim();
-                addToRecentJobs(jobName);
-                
-                const dateStr = entryDateInput.value; // Consistent "YYYY-MM-DD" format
-                const newEntry = {
-                    employeeName,
-                    jobName,
-                    hours: parseFloat(hoursInput.value).toFixed(2),
-                    notes: workNotesInput.value.trim(),
-                    timestamp: new Date().toLocaleTimeString(),
-                    date: dateStr
-                };
-
-                saveEntry(newEntry);
-                successMessage.style.display = 'block';
-                errorMessage.style.display = 'none';
-
-                // Reset form (except name)
-                jobNameInput.value = '';
-                hoursInput.value = '8.00';
-                workNotesInput.value = '';
-                entryDateInput.value = todayFormatted;
-
-                setTimeout(() => successMessage.style.display = 'none', 3000);
-            });
-
-            // Initialize on page load
-            loadRecentJobs();
-            loadAllEntries();
+    const updateDateSelector = () => {
+        const dates = Object.keys(allEntries).sort().reverse();
+        historyDateSelector.innerHTML = '';
+        dates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            historyDateSelector.appendChild(option);
         });
+        if (dates.length > 0) historyDateSelector.value = dates[0];
+    };
+
+    // Theme Management
+    const toggleTheme = () => {
+        document.body.classList.toggle('dark-mode');
+        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+    };
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // Validation Functions
+    const validateName = () => {
+        const name = employeeNameInput.value.trim();
+        if (!name) {
+            nameError.textContent = 'Please enter your name';
+            return false;
+        }
+        nameError.textContent = '';
+        return true;
+    };
+
+    const validateDate = () => {
+        const date = entryDateInput.value;
+        if (!date) {
+            dateError.textContent = 'Please select a date';
+            return false;
+        }
+        const today = new Date().toISOString().split('T')[0];
+        if (date > today) {
+            dateError.textContent = 'Date cannot be in the future';
+            return false;
+        }
+        dateError.textContent = '';
+        return true;
+    };
+
+    const validateJobName = () => {
+        const jobName = jobNameInput.value.trim();
+        if (!jobName) {
+            jobError.textContent = 'Please enter a job name';
+            return false;
+        }
+        jobError.textContent = '';
+        return true;
+    };
+
+    const validateNotes = () => {
+        const notes = workNotesInput.value.trim();
+        if (!notes) {
+            notesError.textContent = 'Please enter work notes';
+            return false;
+        }
+        notesError.textContent = '';
+        return true;
+    };
+
+    const validateForm = () => {
+        return validateName() && validateDate() && validateJobName() && validateNotes();
+    };
+
+    // Event Listeners for Real-Time Validation
+    employeeNameInput.addEventListener('blur', validateName);
+    entryDateInput.addEventListener('blur', validateDate);
+    jobNameInput.addEventListener('blur', validateJobName);
+    workNotesInput.addEventListener('blur', validateNotes);
+
+    // Form Submission
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!validateForm()) {
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            setTimeout(() => errorMessage.style.display = 'none', 3000);
+            return;
+        }
+
+        const dateStr = entryDateInput.value;
+        const entry = {
+            employeeName: employeeNameInput.value.trim(),
+            jobName: jobNameInput.value.trim(),
+            hours: parseFloat(hoursInput.value).toFixed(2),
+            notes: workNotesInput.value.trim(),
+            timestamp: new Date().toLocaleTimeString(),
+            date: dateStr
+        };
+
+        if (isEditing) {
+            allEntries[editingDate][editingIndex] = entry;
+            localStorage.setItem(`timeEntries_${editingDate}`, JSON.stringify(allEntries[editingDate]));
+            isEditing = false;
+            editingDate = null;
+            editingIndex = null;
+            submitButton.textContent = 'Submit Time';
+            cancelEdit.style.display = 'none';
+            entryDateInput.removeAttribute('readonly');
+            historyDateSelector.removeAttribute('disabled');
+        } else {
+            if (!allEntries[dateStr]) allEntries[dateStr] = [];
+            allEntries[dateStr].push(entry);
+            localStorage.setItem(`timeEntries_${dateStr}`, JSON.stringify(allEntries[dateStr]));
+        }
+
+        localStorage.setItem('employeeName', employeeNameInput.value.trim());
+        form.reset();
+        entryDateInput.value = todayFormatted;
+        employeeNameInput.value = localStorage.getItem('employeeName') || '';
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        setTimeout(() => successMessage.style.display = 'none', 3000);
+        loadEntries();
+        updateHistoryDisplay(dateStr);
+    });
+
+    // Edit, Delete, Duplicate Functions
+    const editEntry = (dateStr, index) => {
+        const entry = allEntries[dateStr][index];
+        employeeNameInput.value = entry.employeeName;
+        entryDateInput.value = entry.date;
+        jobNameInput.value = entry.jobName;
+        hoursInput.value = entry.hours;
+        workNotesInput.value = entry.notes;
+        isEditing = true;
+        editingDate = dateStr;
+        editingIndex = index;
+        submitButton.textContent = 'Update';
+        cancelEdit.style.display = 'inline-block';
+        entryDateInput.setAttribute('readonly', true);
+        historyDateSelector.setAttribute('disabled', true);
+    };
+
+    const deleteEntry = (dateStr, index) => {
+        if (confirm('Are you sure you want to delete this entry?')) {
+            allEntries[dateStr].splice(index, 1);
+            if (allEntries[dateStr].length === 0) delete allEntries[dateStr];
+            localStorage.setItem(`timeEntries_${dateStr}`, JSON.stringify(allEntries[dateStr] || []));
+            updateHistoryDisplay(dateStr);
+            updateDateSelector();
+        }
+    };
+
+    const duplicateEntry = (dateStr, index) => {
+        const entry = allEntries[dateStr][index];
+        employeeNameInput.value = entry.employeeName;
+        entryDateInput.value = entry.date;
+        jobNameInput.value = entry.jobName;
+        hoursInput.value = entry.hours;
+        workNotesInput.value = entry.notes;
+    };
+
+    cancelEdit.addEventListener('click', () => {
+        isEditing = false;
+        editingDate = null;
+        editingIndex = null;
+        submitButton.textContent = 'Submit Time';
+        cancelEdit.style.display = 'none';
+        entryDateInput.removeAttribute('readonly');
+        historyDateSelector.removeAttribute('disabled');
+        form.reset();
+        entryDateInput.value = todayFormatted;
+        employeeNameInput.value = localStorage.getItem('employeeName') || '';
+    });
+
+    // History Display
+    const updateHistoryDisplay = (dateStr) => {
+        const entries = allEntries[dateStr] || [];
+        const filteredEntries = entries.filter(entry =>
+            entry.jobName.toLowerCase().includes(searchTerm) ||
+            entry.notes.toLowerCase().includes(searchTerm)
+        );
+        historyList.innerHTML = '';
+        if (filteredEntries.length > 0) {
+            historySection.style.display = 'block';
+            const totalHours = filteredEntries.reduce((sum, entry) => sum + parseFloat(entry.hours), 0).toFixed(2);
+            totalHoursDiv.textContent = `Total hours for ${dateStr}: ${totalHours} hours`;
+            filteredEntries.forEach((entry, index) => {
+                const entryElement = document.createElement('div');
+                entryElement.className = 'history-item';
+                entryElement.innerHTML = `
+                    <div class="history-job">${entry.jobName}</div>
+                    <div class="history-time">${entry.hours} hours</div>
+                    <div>${entry.notes}</div>
+                    <div><small>Submitted at ${entry.timestamp}</small></div>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                    <button class="duplicate-btn">Duplicate</button>
+                `;
+                entryElement.querySelector('.edit-btn').addEventListener('click', () => editEntry(dateStr, index));
+                entryElement.querySelector('.delete-btn').addEventListener('click', () => deleteEntry(dateStr, index));
+                entryElement.querySelector('.duplicate-btn').addEventListener('click', () => duplicateEntry(dateStr, index));
+                historyList.appendChild(entryElement);
+            });
+        } else {
+            historySection.style.display = 'none';
+        }
+    };
+
+    historyDateSelector.addEventListener('change', () => {
+        if (!isEditing) updateHistoryDisplay(historyDateSelector.value);
+    });
+
+    historySearch.addEventListener('input', () => {
+        searchTerm = historySearch.value.toLowerCase();
+        updateHistoryDisplay(historyDateSelector.value);
+    });
+
+    // Sync Placeholder
+    syncButton.addEventListener('click', () => {
+        syncStatus.textContent = 'Syncing...';
+        setTimeout(() => {
+            console.log('Syncing data:', allEntries);
+            syncStatus.textContent = 'Sync complete';
+            setTimeout(() => syncStatus.textContent = '', 2000);
+        }, 1000);
+    });
+
+    // Initial Load
+    loadEntries();
+});
     </script>
 </body>
 </html>
