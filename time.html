@@ -243,16 +243,16 @@
       const nameError = document.getElementById('nameError');
       const dateError = document.getElementById('dateError');
       const jobError = document.getElementById('jobError');
-
+  
       // State variable to store all entries in a flat list
       let allEntries = [];
-
+  
       // Initialize Form
       const today = new Date();
       const todayFormatted = today.toISOString().split('T')[0];
       entryDateInput.value = todayFormatted;
       employeeNameInput.value = localStorage.getItem('employeeName') || '';
-
+  
       // Populate Hours Dropdown in 0.25 increments
       for (let i = 0.25; i <= 24; i += 0.25) {
         const option = document.createElement('option');
@@ -261,7 +261,7 @@
         if (i === 8) option.selected = true;
         hoursInput.appendChild(option);
       }
-
+  
       // Load Entries from localStorage and flatten into a single list
       const loadEntries = () => {
         allEntries = [];
@@ -277,7 +277,7 @@
         updateHistoryDisplay();
         updateJobNameDatalist();
       };
-
+  
       // Update the history display to show recent entries
       const updateHistoryDisplay = () => {
         historyList.innerHTML = '';
@@ -298,7 +298,7 @@
           historySection.style.display = 'none';
         }
       };
-
+  
       // Update the job name datalist with unique job names from the past 2 weeks
       const updateJobNameDatalist = () => {
         const datalist = document.getElementById('jobNameList');
@@ -318,7 +318,7 @@
           datalist.appendChild(option);
         });
       };
-
+  
       // Validation Functions
       const validateName = () => {
         const name = employeeNameInput.value.trim();
@@ -329,7 +329,7 @@
         nameError.textContent = '';
         return true;
       };
-
+  
       const validateDate = () => {
         const date = entryDateInput.value;
         if (!date) {
@@ -344,7 +344,7 @@
         dateError.textContent = '';
         return true;
       };
-
+  
       const validateJobName = () => {
         const jobName = jobNameInput.value.trim();
         if (!jobName) {
@@ -354,16 +354,16 @@
         jobError.textContent = '';
         return true;
       };
-
+  
       const validateForm = () => {
         return validateName() && validateDate() && validateJobName();
       };
-
+  
       employeeNameInput.addEventListener('blur', validateName);
       entryDateInput.addEventListener('blur', validateDate);
       jobNameInput.addEventListener('blur', validateJobName);
-
-      // Form Submission with POST request
+  
+      // Form Submission with POST request and loading indicator
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (!validateForm()) {
@@ -372,52 +372,63 @@
           setTimeout(() => (errorMessage.style.display = 'none'), 3000);
           return;
         }
-
+  
+        // Disable submit button and change its text to indicate loading
+        submitButton.disabled = true;
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Submitting...';
+  
         const dateStr = entryDateInput.value;
         const entry = {
           jobName: jobNameInput.value.trim(),
           date: dateStr,
           employeeName: employeeNameInput.value.trim(),
           hours: parseFloat(hoursInput.value).toFixed(2),
-          notes: workNotesInput.value.trim()
+          notes: workNotesInput.value.trim(),
+          timestamp: new Date().toLocaleTimeString()
         };
-
+  
         // Send POST request to App Script
         fetch('https://script.google.com/macros/s/AKfycbzZlyX8jjixaZcMpWxqB5H0ZGJNpO6ycmqtp55ivxEg3LBDA7B51QuvYOC3MlJAafOqcw/exec', {
-            method: 'POST',
-            redirect: "follow",
-            headers: {
-              'Content-Type': 'text/plain'
-            },
-            body: JSON.stringify(entry)
+          method: 'POST',
+          redirect: "follow",
+          headers: {
+            'Content-Type': 'text/plain'
+          },
+          body: JSON.stringify(entry)
         })
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-              console.log('Data saved successfully');
-              // Save entry to localStorage for the specific date
-              const dateKey = `timeEntries_${dateStr}`;
-              const existingEntries = JSON.parse(localStorage.getItem(dateKey)) || [];
-              existingEntries.push(entry);
-              localStorage.setItem(dateKey, JSON.stringify(existingEntries));
-      
-              localStorage.setItem('employeeName', employeeNameInput.value.trim());
-              form.reset();
-              entryDateInput.value = todayFormatted;
-              employeeNameInput.value = localStorage.getItem('employeeName') || '';
-              successMessage.style.display = 'block';
-              errorMessage.style.display = 'none';
-              setTimeout(() => (successMessage.style.display = 'none'), 3000);
-              loadEntries();
+            console.log('Data saved successfully');
+            // Save entry to localStorage for the specific date
+            const dateKey = `timeEntries_${dateStr}`;
+            const existingEntries = JSON.parse(localStorage.getItem(dateKey)) || [];
+            existingEntries.push(entry);
+            localStorage.setItem(dateKey, JSON.stringify(existingEntries));
+  
+            localStorage.setItem('employeeName', employeeNameInput.value.trim());
+            form.reset();
+            entryDateInput.value = todayFormatted;
+            employeeNameInput.value = localStorage.getItem('employeeName') || '';
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            setTimeout(() => (successMessage.style.display = 'none'), 3000);
+            loadEntries();
           } else {
             console.error('Error saving data:', data.message);
           }
         })
         .catch(error => {
           console.error('Error:', error);
+        })
+        .finally(() => {
+          // Re-enable the submit button and reset its text
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
         });
       });
-
+  
       // Initial Load
       loadEntries();
     });
