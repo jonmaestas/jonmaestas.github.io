@@ -228,6 +228,16 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Device ID Setup
+      let deviceId = localStorage.getItem('deviceId');
+      if (!deviceId) {
+        // Use crypto.randomUUID() if available; otherwise, generate a fallback string.
+        deviceId = (typeof crypto.randomUUID === 'function')
+          ? crypto.randomUUID()
+          : Math.random().toString(36).substring(2) + Date.now().toString(36);
+        localStorage.setItem('deviceId', deviceId);
+      }
+  
       // DOM Elements
       const form = document.getElementById('timeLogForm');
       const employeeNameInput = document.getElementById('employeeName');
@@ -385,11 +395,12 @@
           employeeName: employeeNameInput.value.trim(),
           hours: parseFloat(hoursInput.value).toFixed(2),
           notes: workNotesInput.value.trim(),
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString(),
+          deviceId: deviceId  // Include the device ID in your entry
         };
   
         // Send POST request to App Script
-        fetch('https://script.google.com/macros/s/AKfycbzZlyX8jjixaZcMpWxqB5H0ZGJNpO6ycmqtp55ivxEg3LBDA7B51QuvYOC3MlJAafOqcw/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbw5b0cyg4JD2b5uV_uImYVVizAN1igsSluGPM8uwatRwUYp784ATaGJaHfPH6p1qtdmKg/exec', {
           method: 'POST',
           redirect: "follow",
           headers: {
@@ -433,5 +444,6 @@
       loadEntries();
     });
   </script>
+  
 </body>
 </html>
