@@ -384,13 +384,13 @@
         };
 
         // Send POST request to App Script
-        fetch('https://script.google.com/macros/s/AKfycbzigvNujXkbpR4YPJFutSxN7FUzQxzzEIc5Kz4_ZSHp2SezwA_oxTiTi0gn8ZIcPWgFUw/exec', {
-          redirect: "follow",
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(entry)
+        fetch('https://script.google.com/macros/s/AKfycbyIKaTPVlkwih-Rj_cYAQ1XexLU-lhZN2ZgSf_0AdV_DD6aBhQLYmTcBvMwhdBSyEp8Nw/exec', {
+            method: 'POST',
+            redirect: "follow",
+            headers: {
+              'Content-Type': 'text/plain'
+            },
+            body: JSON.stringify(entry)
         })
         .then(response => response.json())
         .then(data => {
