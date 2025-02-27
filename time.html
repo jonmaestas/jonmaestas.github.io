@@ -422,6 +422,7 @@
             form.reset();
             entryDateInput.value = todayFormatted;
             employeeNameInput.value = localStorage.getItem('employeeName') || '';
+            hoursInput.value = "8.00";
             successMessage.style.display = 'block';
             errorMessage.style.display = 'none';
             setTimeout(() => (successMessage.style.display = 'none'), 3000);
